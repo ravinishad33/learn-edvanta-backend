@@ -17,6 +17,7 @@ const createCertificate = async (data) => {
             .replace("{{certificateId}}", data.certificateId)
             .replace("{{signatureUrl}}", data.signatureUrl)
             .replace("{{authorityName}}", data.authorityName)
+            .replace("{{currentYear}}",data.currentYear)
             .replace("{{authorityTitle}}", data.authorityTitle);
 
         // 3. Create folder if not exists

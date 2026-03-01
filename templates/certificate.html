@@ -3,6 +3,502 @@
 <head>
 <meta charset="UTF-8">
 <title>Edvanta Certificate</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cinzel:wght@400;500;600;700&family=Great+Vibes&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    font-family: 'Inter', sans-serif;
+}
+
+.certificate {
+    width: 1200px;
+    height: 800px;
+    background: #fefefe;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.6);
+}
+
+/* Blob Backgrounds */
+.blob-container {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0.12;
+}
+
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(40px);
+}
+
+.blob-1 {
+    width: 400px;
+    height: 400px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    top: -100px;
+    right: -50px;
+}
+
+.blob-2 {
+    width: 350px;
+    height: 350px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    bottom: -100px;
+    left: -50px;
+}
+
+.blob-3 {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Frames */
+.frame-outer {
+    position: absolute;
+    inset: 20px;
+    border: 3px solid #d4af37;
+}
+
+.frame-inner {
+    position: absolute;
+    inset: 30px;
+    border: 1px solid #c9b037;
+}
+
+/* Corners */
+.corner {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border: 3px solid #d4af37;
+}
+
+.corner-tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+.corner-tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+.corner-bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+.corner-br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+
+/* Content */
+.content {
+    position: relative;
+    height: 100%;
+    padding: 60px 80px 50px 80px;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    font-weight: 700;
+    font-family: 'Cinzel', serif;
+    border: 2px solid #d4af37;
+}
+
+.logo-text {
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: #1e3a8a;
+    letter-spacing: 2px;
+}
+
+.logo-text span {
+    color: #d4af37;
+}
+
+.cert-badge {
+    text-align: right;
+    padding: 10px 20px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+}
+
+.cert-badge .label {
+    font-size: 9px;
+    font-weight: 600;
+    color: #6c757d;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.cert-badge .id {
+    font-size: 13px;
+    color: #1e3a8a;
+    font-weight: 700;
+    font-family: monospace;
+    margin-top: 4px;
+}
+
+/* Main */
+.main {
+    flex: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.pretitle {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #d4af37;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.title {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    font-weight: 600;
+    color: #1e3a8a;
+    line-height: 1.1;
+    margin-bottom: 30px;
+}
+
+.title::after {
+    content: '';
+    display: block;
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #d4af37, transparent);
+    margin: 20px auto 0;
+}
+
+.recipient-label {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    color: #6c757d;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.recipient-name {
+    font-family: 'Great Vibes', cursive;
+    font-size: 56px;
+    color: #1a1a2e;
+    margin-bottom: 30px;
+    position: relative;
+    display: inline-block;
+}
+
+.recipient-name::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #d4af37, transparent);
+}
+
+.course-text {
+    font-size: 14px;
+    color: #495057;
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.course-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #1e3a8a;
+    margin: 10px 0;
+    display: block;
+}
+
+/* Footer */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: auto;
+    padding-top: 30px;
+    border-top: 1px solid #e9ecef;
+}
+
+.date-section {
+    text-align: left;
+}
+
+.date-label {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    color: #adb5bd;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
+.date-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #343a40;
+}
+
+.signature-section {
+    text-align: center;
+}
+
+.signature-line {
+    width: 180px;
+    height: 1px;
+    background: #343a40;
+    margin: 0 auto 10px;
+    position: relative;
+}
+
+.signature-line::after {
+    content: '✦';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fefefe;
+    padding: 0 10px;
+    color: #d4af37;
+    font-size: 14px;
+}
+
+.signature-name {
+    font-family: 'Great Vibes', cursive;
+    font-size: 28px;
+    color: #1a1a2e;
+}
+
+.signature-title {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 5px;
+}
+
+/* Stamp */
+.stamp-seal {
+    position: absolute;
+    right: 60px;
+    bottom: 60px;
+    width: 120px;
+    height: 120px;
+    transform: rotate(-15deg);
+}
+
+.stamp-outer {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #c41e3a 0%, #8b0000 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #d4af37;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.stamp-inner {
+    text-align: center;
+    color: white;
+}
+
+.stamp-icon {
+    font-size: 24px;
+    margin-bottom: 2px;
+}
+
+.stamp-text-main {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.stamp-text-bottom {
+    font-family: 'Cinzel', serif;
+    font-size: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0.9;
+}
+
+.stamp-year {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    color: #8b0000;
+    font-weight: 700;
+}
+
+/* Watermark */
+.watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-size: 150px;
+    font-weight: 700;
+    color: #e9ecef;
+    opacity: 0.1;
+    pointer-events: none;
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 20px;
+    z-index: 1;
+}
+</style>
+</head>
+
+<body>
+
+<div class="certificate">
+    <!-- Backgrounds -->
+    <div class="blob-container">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    
+    <div class="watermark">EDVANTA</div>
+    
+    <!-- Frames -->
+    <div class="frame-outer"></div>
+    <div class="frame-inner"></div>
+    
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+
+    <!-- Content -->
+    <div class="content">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">E</div>
+                <div class="logo-text">Ed<span>vanta</span></div>
+            </div>
+            <div class="cert-badge">
+                <div class="label">Certificate ID</div>
+                <div class="id">{{certificateId}}</div>
+            </div>
+        </div>
+
+        <div class="main">
+            <div class="pretitle">This is to certify that</div>
+            <div class="title">Certificate of Completion</div>
+            
+            <div class="recipient-label">Presented to</div>
+            <div class="recipient-name">{{studentName}}</div>
+            
+            <div class="course-text">
+                has successfully completed the professional course<br>
+                <span class="course-name">{{courseName}}</span>
+                demonstrating dedication and commitment to excellence.
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="date-section">
+                <div class="date-label">Date of Issue</div>
+                <div class="date-value">{{completionDate}}</div>
+            </div>
+
+            <div class="signature-section">
+                <img src="{{signatureUrl}}" style="max-width: 150px; max-height: 60px; margin-bottom: 5px;" onerror="this.style.display='none'">
+                <div class="signature-line"></div>
+                <div class="signature-name">{{authorityName}}</div>
+                <div class="signature-title">{{authorityTitle}}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stamp -->
+    <div class="stamp-seal">
+        <div class="stamp-outer">
+            <div class="stamp-inner">
+                <div class="stamp-icon">✦</div>
+                <div class="stamp-text-main">VERIFIED</div>
+                <div class="stamp-text-bottom">Official</div>
+            </div>
+        </div>
+        <div class="stamp-year">{{currentYear}}</div>
+    </div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Edvanta Certificate</title>
 
 <style>
 * {
@@ -195,4 +691,6 @@ body {
 
 </div>
 </body>
-</html>
+</html> -->
+
+
