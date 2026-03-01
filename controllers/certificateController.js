@@ -87,7 +87,6 @@ const generateCertificate = async (req, res) => {
                 month: "long",
                 year: "numeric",
             }),
-            currentYear: new Date().getFullYear(),
             certificateId,
             signatureUrl,
             authorityName: "Ravi Pravin Nikhil",
