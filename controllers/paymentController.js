@@ -2,7 +2,9 @@ const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const Payment = require("../models/paymentModel")
 const Enrollment = require("../models/enrollmentModel")
-const Course = require("../models/courseModel")
+const Course = require("../models/courseModel");
+const { sendEnrollmentEmail } = require("../services/emailService");
+const { User } = require("../models/userModel");
 
 
 
@@ -70,6 +72,19 @@ const verifyPayment = async (req, res) => {
 
         await Course.findByIdAndUpdate(courseId, {
             $addToSet: { enrolledStudents: userId } // avoids duplicates
+        });
+
+
+
+        // Fetch student and course documents before sending email
+        const student = await User.findById(userId);
+        const course = await Course.findById(courseId).populate("instructor");
+
+        await sendEnrollmentEmail(student, course, {
+            amount: course.price,
+            paymentId: payment._id,
+            method: payment.paymentMethod,
+            status: payment.status
         });
 
 

@@ -357,8 +357,7 @@ const sendPasswordResetSuccessEmail = async (user, ipAddress, deviceName, locati
 };
 
 
-
-const sendEnrollmentEmail = async (student, course) => {
+const sendEnrollmentEmail = async (student, course, payment) => {
   const mailOptions = {
     from: `"Edvanta" <${process.env.EMAIL_USER}>`,
     to: student?.email,
@@ -402,7 +401,7 @@ const sendEnrollmentEmail = async (student, course) => {
       color: #4B6CB7;
       font-size: 20px;
     }
-    .details {
+    .details, .payment {
       background-color: #f0f4ff;
       padding: 15px;
       border-radius: 8px;
@@ -446,6 +445,14 @@ const sendEnrollmentEmail = async (student, course) => {
         <p><strong>Enrolled At:</strong> ${new Date().toLocaleString()}</p>
       </div>
 
+      <div class="payment">
+        <p><strong>Payment Details:</strong></p>
+        <p><strong>Amount Paid:</strong> ₹${payment?.amount}</p>
+        <p><strong>Payment ID:</strong> ${payment?.paymentId}</p>
+        <p><strong>Payment Method:</strong> ${payment?.method}</p>
+        <p><strong>Status:</strong> ${payment?.status}</p>
+      </div>
+
       <p>You can now access the course and start learning.</p>
       <a href="${process.env.FRONTEND_URL}/course/${course?._id}" class="button">Go to Course</a>
 
@@ -463,11 +470,7 @@ const sendEnrollmentEmail = async (student, course) => {
   };
 
   await transporter.sendMail(mailOptions);
-};
-
-
-
-
+}
 
 
 
