@@ -1,9 +1,9 @@
-const express=require("express");
+const express = require("express");
 const { connectDB } = require("./config/db");
-const path=require("path")
-const cors=require("cors");
+const path = require("path")
+const cors = require("cors");
 require("dotenv").config();
-const app=express();
+const app = express();
 
 
 
@@ -15,8 +15,26 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
+// app.use(cors({
+//     origin:"*"
+// }));
+
+
+
+
 app.use(cors({
-    origin:"*"
+    origin: function (origin, callback) {
+        // allow requests with no origin (like Postman)
+        if (!origin) return callback(null, true);
+
+        // Check if origin is localhost or your frontend URL from env
+        if (origin === "http://localhost:5173" || origin === process.env.FRONTEND_URL) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true
 }));
 
 // connection to mongoose 
@@ -27,11 +45,11 @@ app.use("/uploads", express.static("uploads"));
 
 
 
-app.use("/api/auth",require("./routes/authRoute"));
-app.use("/api/category",require("./routes/categoryRoute"));
-app.use("/api/subcategory",require("./routes/subCategoryRoute"));
-app.use("/api/course",require("./routes/courseRoute"));
-app.use("/api/users",require("./routes/userRoute"));
+app.use("/api/auth", require("./routes/authRoute"));
+app.use("/api/category", require("./routes/categoryRoute"));
+app.use("/api/subcategory", require("./routes/subCategoryRoute"));
+app.use("/api/course", require("./routes/courseRoute"));
+app.use("/api/users", require("./routes/userRoute"));
 app.use("/api/otp", require("./routes/OtpRoute"));
 
 app.use("/api/instructor", require("./routes/instructorRoute"));
@@ -46,6 +64,6 @@ app.use("/api/certificate", require("./routes/certificateRoute"));
 
 app.use('/api/chat', require('./routes/chatRoute'));
 
-app.listen(process.env.PORT,()=>{
-    console.log("Server is running on PORT ",process.env.PORT);
+app.listen(process.env.PORT, () => {
+    console.log("Server is running on PORT ", process.env.PORT);
 });
