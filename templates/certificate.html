@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Edvanta Certificate</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #0f172a; /* dark outer background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.certificate {
+    width: 1400px;
+    height: 900px;
+    background: #ffffff;
+    position: relative;
+    padding: 100px 120px;
+    overflow: hidden;
+}
+
+/* Decorative Right Panel */
+.right-strip {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 220px;
+    height: 100%;
+    background: linear-gradient(180deg, #1e3a8a, #0f172a);
+}
+
+/* Accent Shapes */
+.accent-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 140px;
+    height: 140px;
+    background: #f97316;
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+.accent-bottom {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 140px;
+    height: 140px;
+    background: #f97316;
+    clip-path: polygon(100% 100%, 0 100%, 100% 0);
+}
+
+/* Branding */
+.brand {
+    font-size: 34px;
+    font-weight: 700;
+    color: #1e3a8a;
+    letter-spacing: 1px;
+}
+
+.brand span {
+    color: #f97316;
+}
+
+/* Titles */
+.title-small {
+    margin-top: 100px;
+    font-size: 34px;
+    letter-spacing: 3px;
+    color: #111827;
+}
+
+.title-large {
+    font-size: 80px;
+    font-weight: 700;
+    font-family: Georgia, serif;
+    color: #111827;
+}
+
+/* Student Name */
+.student-name {
+    margin-top: 60px;
+    font-size: 48px;
+    font-weight: 600;
+    border-bottom: 2px dotted #9ca3af;
+    display: inline-block;
+    padding-bottom: 10px;
+    color: #111827;
+}
+
+/* Description */
+.description {
+    margin-top: 35px;
+    font-size: 24px;
+    color: #374151;
+    line-height: 1.7;
+    max-width: 900px;
+}
+
+/* Footer Left */
+.footer-left {
+    position: absolute;
+    bottom: 30px;
+    left: 120px;
+    font-size: 18px;
+    color: #374151;
+}
+
+/* Signature Block */
+.signature-block {
+    position: absolute;
+    bottom: 25px;
+    right: 335px;
+    text-align: center;
+}
+
+.signature-block img {
+    width: 140px;
+}
+
+.signature-name {
+    margin-top: 5px;
+    font-weight: 600;
+    color: #111827;
+}
+
+/* Verification Badge */
+.badge {
+    position: absolute;
+    right: 60px;
+    bottom: 180px;
+    width: 160px;
+    height: 160px;
+    background: #F97316;
+    border-radius: 50%;
+    border: 8px solid #1E3A8A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 18px;
+    text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="certificate">
+
+    <div class="accent-top"></div>
+    <div class="accent-bottom"></div>
+    <div class="right-strip"></div>
+
+    <div class="brand">
+        Ed<span>vanta</span>
+    </div>
+
+    <div class="title-small">CERTIFICATE OF</div>
+    <div class="title-large">COMPLETION</div>
+
+    <div class="student-name">{{studentName}}</div>
+
+    <div class="description">
+        has successfully completed the professional course<br><br>
+        <strong>{{courseName}}</strong><br><br>
+        demonstrating dedication, skill advancement, and commitment to excellence.
+    </div>
+
+    <div class="footer-left">
+        Date: {{completionDate}}<br>
+        Certificate ID: {{certificateId}}
+    </div>
+
+    <div class="signature-block">
+        <img src="{{signatureUrl}}" />
+        <div class="signature-name">{{authorityName}}</div>
+        <div>{{authorityTitle}}</div>
+    </div>
+
+    <div class="badge">
+        VERIFIED<br>EDVANTA
+    </div>
+
+</div>
+</body>
+</html>
