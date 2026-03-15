@@ -17,7 +17,6 @@ const createCertificate = async (data) => {
             .replace("{{certificateId}}", data.certificateId)
             .replace("{{logoUrl}}", data.logoIconUrl)
             .replace("{{qrcode}}", data.qrCode)
-
             .replace("{{signatureUrl}}", data.signatureUrl)
             .replace("{{authorityName}}", data.authorityName)
             .replace("{{authorityTitle}}", data.authorityTitle);
@@ -35,7 +34,7 @@ const createCertificate = async (data) => {
             headless: true,
             args: ["--no-sandbox", "--disable-setuid-sandbox"]
         });
-        
+
         const page = await browser.newPage();
 
         // Set viewport same as PDF dimensions
