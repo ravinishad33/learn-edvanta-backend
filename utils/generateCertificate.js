@@ -15,6 +15,9 @@ const createCertificate = async (data) => {
             .replace("{{studentName}}", data.studentName)
             .replace("{{completionDate}}", data.completionDate)
             .replace("{{certificateId}}", data.certificateId)
+            .replace("{{logoUrl}}", data.logoIconUrl)
+            .replace("{{qrcode}}", data.qrCode)
+
             .replace("{{signatureUrl}}", data.signatureUrl)
             .replace("{{authorityName}}", data.authorityName)
             .replace("{{authorityTitle}}", data.authorityTitle);

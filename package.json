@@ -2,6 +2,7 @@
   "name": "server",
   "version": "1.0.0",
   "main": "server.js",
+  "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
@@ -25,6 +26,7 @@
     "multer": "^2.0.2",
     "nodemailer": "^7.0.13",
     "puppeteer": "^24.37.5",
+    "qrcode": "^1.5.4",
     "razorpay": "^2.9.6",
     "ua-parser-js": "^2.0.9"
   }

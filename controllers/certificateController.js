@@ -5,7 +5,7 @@ const Certificate = require("../models/certificateModel");
 const createCertificate = require("../utils/generateCertificate");
 const fs = require("fs");
 const { uploadOnCloudinary } = require("../utils/cloudinary");
-
+const generateQRCode = require("../utils/qrcode");
 
 
 
@@ -78,6 +78,10 @@ const generateCertificate = async (req, res) => {
         // 6️⃣ Generate certificate
         const certificateId = `ED-${Date.now()}`;
         const signatureUrl = process.env.SIGN_SECURE_URL;
+        const logoIconUrl = process.env.LOGO_SECURE_URL;
+
+
+        const qrCode = await generateQRCode(`${process.env.FRONTEND_URL}/certificate?id=${certificateId}`);
 
         const certificateData = {
             courseName: course.title, // Better than subcategory
@@ -88,8 +92,10 @@ const generateCertificate = async (req, res) => {
                 year: "numeric",
             }),
             certificateId,
+            logoIconUrl,
             signatureUrl,
-            authorityName: "Ravi Pravin Nikhil",
+            qrCode,
+            authorityName: "Mr. Niravin",
             authorityTitle: "Founder & CEO, Edvanta",
         };
 
@@ -142,46 +148,6 @@ const generateCertificate = async (req, res) => {
 
 
 
-
-// const downloadCertificateByCourse = async (req, res) => {
-//     try {
-//         const { courseId } = req.params;
-//         const userId = req.user.userId;
-//         // Find the certificate for this student + course
-//         const certificate = await Certificate.findOne({
-//             course: courseId,
-//             student: userId,
-//         });
-
-//         if (!certificate) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: "Certificate not found",
-//             });
-//         }
-
-//         // Construct download URL using Cloudinary attachment flag
-//         let downloadUrl = certificate.file.url;
-
-//         // If the file is on Cloudinary, append fl_attachment
-//         if (certificate.file.publicId && certificate.file.url.includes("res.cloudinary.com")) {
-//             const url = new URL(certificate.file.url);
-//             url.pathname = url.pathname.replace("/upload/", "/upload/fl_attachment/");
-//             downloadUrl = url.toString();
-//         }
-
-//         return res.status(200).json({
-//             success: true,
-//             downloadUrl,
-//         });
-//     } catch (error) {
-//         console.error(error);
-//         return res.status(500).json({
-//             success: false,
-//             message: "Failed to download certificate",
-//         });
-//     }
-// };
 
 
 
@@ -252,8 +218,70 @@ const downloadCertificateByCourse = async (req, res) => {
 
 
 
+/**
+ * @desc    Verify certificate by ID (Public Access)
+ * @route   GET /api/certificates/verify/:certificateId
+ */
+const verifyCertificate = async (req, res) => {
+    try {
+        const { certificateId } = req.params;
+
+        // 1️⃣ Find certificate and populate related info
+        const certificate = await Certificate.findOne({ certificateId })
+            .populate("student", "name") // Get student name
+            .populate({
+                path: "course",
+                select: "title certificate instructor",
+                populate: { path: "instructor", select: "name" }, // Get instructor name
+            });
+
+        // 2️⃣ If not found
+        if (!certificate) {
+            return res.status(404).json({
+                success: false,
+                message: "Certificate not found. Please verify the ID and try again.",
+            });
+        }
+
+        // 3️⃣ If certificate feature was disabled later for this course
+        if (!certificate.course.certificate) {
+            return res.status(400).json({
+                success: false,
+                message: "This certificate is no longer valid or has been revoked.",
+            });
+        }
+
+        // 4️⃣ Format data for the frontend
+        const verificationData = {
+            certificateId: certificate.certificateId,
+            recipientName: certificate.student.name,
+            courseName: certificate.course.title,
+            issueDate: new Date(certificate.createdAt).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+            }),
+            instructorName: certificate.course.instructor?.name || "N/A", // dynamic instructor
+            fileUrl: certificate.file.url,
+        };
+
+        return res.status(200).json({
+            success: true,
+            message: "Certificate verified successfully",
+            ...verificationData,
+        });
+
+    } catch (error) {
+        console.error("Verification Error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred during verification",
+        });
+    }
+};
 
 module.exports = {
     generateCertificate,
-    downloadCertificateByCourse
+    downloadCertificateByCourse,
+    verifyCertificate
 };

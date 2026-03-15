@@ -7,7 +7,6 @@ const app = express();
 
 
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -15,27 +14,28 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
-// app.use(cors({
-//     origin:"*"
-// }));
-
-
-
-
 app.use(cors({
-    origin: function (origin, callback) {
-        // allow requests with no origin (like Postman)
-        if (!origin) return callback(null, true);
-
-        // Check if origin is localhost or your frontend URL from env
-        if (origin === "http://localhost:5173" || origin === process.env.FRONTEND_URL) {
-            callback(null, true);
-        } else {
-            callback(new Error("Not allowed by CORS"));
-        }
-    },
-    credentials: true
+    origin: "*"
 }));
+
+
+
+
+
+// app.use(cors({
+//     origin: function (origin, callback) {
+//         // allow requests with no origin (like Postman)
+//         if (!origin) return callback(null, true);
+
+//         // Check if origin is localhost or your frontend URL from env
+//         if (origin === "http://localhost:5173" || origin === process.env.FRONTEND_URL) {
+//             callback(null, true);
+//         } else {
+//             callback(new Error("Not allowed by CORS"));
+//         }
+//     },
+//     credentials: true
+// }));
 
 // connection to mongoose 
 connectDB();
@@ -63,6 +63,8 @@ app.use("/api/certificate", require("./routes/certificateRoute"));
 
 
 app.use('/api/chat', require('./routes/chatRoute'));
+
+
 
 app.listen(process.env.PORT, () => {
     console.log("Server is running on PORT ", process.env.PORT);

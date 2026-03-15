@@ -1,14 +1,16 @@
 const mongoose = require("mongoose");
 const Course = require("../models/courseModel");
 const Enrollment = require("../models/enrollmentModel");
+const Payment=require("../models/paymentModel")
 const { User } = require("../models/userModel");
+const Certificate = require("../models/certificateModel");
 const { uploadOnCloudinary } = require("../utils/cloudinary");
 const fs = require("fs");
 const os = require("os");
 const { getAvgQueryTime, getCpuUsage } = require("../services/systemStatsService");
 const { getPoolStats } = require("../config/db");
 const { upsertSystemLog, removeSystemLog, getSystemLogs } = require("../services/systemLogs");
-const Certificate = require("../models/certificateModel");
+
 
 // GET /api/admin/stats
 
@@ -1080,6 +1082,235 @@ const getPendingCourseApprovals = async (req, res) => {
 
 
 
+
+
+
+const getAdminRecentActivities = async (req, res) => {
+  try {
+
+    // recent enrollments
+    const enrollments = await Enrollment.find()
+      .populate("studentId", "name")
+      .populate("courseId", "title")
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    const enrollmentActivities = enrollments.map((e) => ({
+      id: e._id,
+      user: e.studentId?.name || "Student",
+      action: "enrolled in course",
+      course: e.courseId?.title || "",
+      time: e.createdAt,
+      type: "info",
+      icon: "CreditCardIcon",
+    }));
+
+
+    // completed courses
+    const completedCourses = await Enrollment.find({ status: "completed" })
+      .populate("studentId", "name")
+      .populate("courseId", "title")
+      .sort({ updatedAt: -1 })
+      .limit(10);
+
+    const completionActivities = completedCourses.map((e) => ({
+      id: e._id,
+      user: e.studentId?.name || "Student",
+      action: "completed course",
+      course: e.courseId?.title || "",
+      time: e.updatedAt,
+      type: "success",
+      icon: "CheckCircleIcon",
+    }));
+
+
+    // payments
+    const payments = await Payment.find({ status: "paid" })
+      .populate("student", "name")
+      .populate("course", "title")
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    const paymentActivities = payments.map((p) => ({
+      id: p._id,
+      user: p.student?.name || "Student",
+      action: "purchased course",
+      course: p.course?.title || "",
+      time: p.createdAt,
+      type: "info",
+      icon: "CreditCardIcon",
+    }));
+
+
+    // certificates generated
+    const certificates = await Certificate.find()
+      .populate("student", "name")
+      .populate("course", "title")
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    const certificateActivities = certificates.map((c) => ({
+      id: c._id,
+      user: c.student?.name || "Student",
+      action: "generated certificate",
+      course: c.course?.title || "",
+      time: c.createdAt,
+      type: "success",
+      icon: "CheckCircleIcon",
+    }));
+
+
+    // instructor uploaded course
+    const courses = await Course.find()
+      .populate("instructor", "name")
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    const courseActivities = courses.map((c) => ({
+      id: c._id,
+      user: c.instructor?.name || "Instructor",
+      action: "uploaded course",
+      course: c.title,
+      time: c.createdAt,
+      type: "info",
+      icon: "UserPlusIcon",
+    }));
+
+
+    // new users registered
+    const users = await User.find()
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    const userActivities = users.map((u) => ({
+      id: u._id,
+      user: u.name || "User",
+      action: "registered",
+      course: "",
+      time: u.createdAt,
+      type: "info",
+      icon: "UserPlusIcon",
+    }));
+
+
+    // combine all activities
+    const activities = [
+      ...enrollmentActivities,
+      ...completionActivities,
+      ...paymentActivities,
+      ...certificateActivities,
+      ...courseActivities,
+      ...userActivities,
+    ]
+      .sort((a, b) => new Date(b.time) - new Date(a.time))
+      .slice(0, 15);
+
+    return res.status(200).json({
+      success: true,
+      data: activities,
+    });
+
+  } catch (error) {
+    console.error("Admin recent activities error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch activities",
+    });
+  }
+};
+
+
+
+
+
+
+
+
+
+const getUserDetailForAdmin = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // 1. Fetch Basic User Profile
+        const user = await User.findById(id).select("-password");
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        let extraData = {};
+
+        // 2. Role-Based Data Gathering
+        if (user.role === "student") {
+            const [enrollments, payments, certificates] = await Promise.all([
+                Enrollment.find({ studentId: id }).populate("courseId", "title thumbnail averageRating"),
+                Payment.find({ student: id }).sort({ createdAt: -1 }),
+                Certificate.find({ student: id }).populate("course", "title")
+            ]);
+
+            extraData = {
+                enrollments,
+                payments,
+                certificates,
+                stats: {
+                    totalEnrolled: enrollments.length,
+                    completedCourses: enrollments.filter(e => e.status === "completed").length,
+                    totalSpent: payments.filter(p => p.status === "paid").reduce((acc, curr) => acc + curr.amount, 0) / 100 // assuming paise
+                }
+            };
+        } 
+        
+        else if (user.role === "instructor") {
+            const courses = await Course.find({ instructor: id });
+            
+            // Calculate total students across all courses
+            const totalStudents = courses.reduce((acc, course) => acc + course.enrolledStudents.length, 0);
+            
+            // Get last 5 payments related to this instructor's courses
+            const courseIds = courses.map(c => c._id);
+            const earnings = await Payment.find({ course: { $in: courseIds }, status: "paid" })
+                .limit(10)
+                .sort({ createdAt: -1 })
+                .populate("student", "name email");
+
+            extraData = {
+                courses,
+                earnings,
+                stats: {
+                    totalCourses: courses.length,
+                    activeStudents: totalStudents,
+                    averageRating: courses.reduce((acc, c) => acc + c.averageRating, 0) / (courses.length || 1),
+                    totalRevenue: earnings.reduce((acc, curr) => acc + curr.amount, 0) / 100
+                }
+            };
+        }
+
+        // 3. System-wide Activity (For all roles)
+        // You could add a specific "Log" model here if you have one
+        const recentActivity = [
+            { event: "Account Created", date: user.createdAt },
+            { event: "Last Profile Update", date: user.updatedAt },
+            { event: "Last Login Recorded", date: user.lastLogin }
+        ];
+
+        res.status(200).json({
+            success: true,
+            user,
+            extraData,
+            recentActivity
+        });
+
+    } catch (error) {
+        console.error("Admin User Detail Error:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
+
+
+
+
+
+
+
 module.exports = {
   getAdminStats,
   getAdminCourses,
@@ -1094,5 +1325,7 @@ module.exports = {
   getSystemStatus,
   approveCourse,
   rejectCourse,
-  getPendingCourseApprovals
+  getPendingCourseApprovals,
+  getAdminRecentActivities,
+  getUserDetailForAdmin
 };
