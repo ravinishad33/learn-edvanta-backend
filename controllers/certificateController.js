@@ -81,7 +81,9 @@ const generateCertificate = async (req, res) => {
         const logoIconUrl = process.env.LOGO_SECURE_URL;
 
 
-        const qrCode = await generateQRCode(`${process.env.FRONTEND_URL}/certificate?id=${certificateId}`);
+        // const qrCode = await generateQRCode(`${process.env.FRONTEND_URL}/certificate?id=${certificateId}`);
+        const qrCode = await generateQRCode(`https://learn-edvanta.netlify.app/certificate?id=${certificateId}`);
+
 
         const certificateData = {
             courseName: course.title, // Better than subcategory

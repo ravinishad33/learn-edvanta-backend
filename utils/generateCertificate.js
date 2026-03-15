@@ -30,10 +30,9 @@ const createCertificate = async (data) => {
         const outputPath = path.join(outputDir, `${data.certificateId}.png`);
 
         // 4. Launch browser
-        const browser = await puppeteer.launch({
-            headless: true,
-            executablePath: "/opt/render/.cache/puppeteer/chrome/linux-146.0.7680.76/chrome-linux64/chrome",
-            args: ["--no-sandbox", "--disable-setuid-sandbox"]
+        browser = await puppeteer.launch({
+            headless: "new",
+            args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]
         });
 
         const page = await browser.newPage();
