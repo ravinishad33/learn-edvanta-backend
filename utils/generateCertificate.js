@@ -32,9 +32,10 @@ const createCertificate = async (data) => {
 
         // 4. Launch browser
         const browser = await puppeteer.launch({
-            headless: "new",
+            headless: true,
             args: ["--no-sandbox", "--disable-setuid-sandbox"]
         });
+        
         const page = await browser.newPage();
 
         // Set viewport same as PDF dimensions
