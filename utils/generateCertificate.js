@@ -32,9 +32,8 @@ const createCertificate = async (data) => {
 
         // 4. Launch browser
         const browser = await puppeteer.launch({
-            headless: true,
-            executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-            args: ["--no-sandbox", "--disable-setuid-sandbox"],
+            headless: "new",
+            args: ["--no-sandbox", "--disable-setuid-sandbox"]
         });
         const page = await browser.newPage();
 
