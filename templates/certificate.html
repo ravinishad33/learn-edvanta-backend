@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Edvanta Professional Certificate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Cinzel:wght@400;700&family=Great+Vibes&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+        }
+
+        .certificate {
+            width: 1400px;
+            height: 900px;
+            background: #ffffff;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #94a3b8;
+        }
+
+        /* Guilloche Security Pattern */
+        .certificate::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg stroke='%23c5a059' stroke-width='0.2' stroke-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.4;
+            z-index: 1;
+        }
+
+        .border-design {
+            position: absolute;
+            inset: 20px;
+            border: 4px solid #c5a059;
+            border-image: linear-gradient(to bottom right, #c5a059, #f9e3b4, #8a6d3b) 1;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .border-inner {
+            position: absolute;
+            inset: 35px;
+            border: 1px solid #c5a059;
+            opacity: 0.3;
+            z-index: 2;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            height: 100%;
+            padding: 60px 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Header */
+        .header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 15px; }
+        .logo-mark {
+            width: 65px; height: 65px; background: #ffffff;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid #f9e3b4; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 8px; overflow: hidden;
+        }
+        .logo-mark img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        .brand-text { font-family: 'Cinzel', serif; font-size: 34px; color: #1e3a8a; letter-spacing: 2px; }
+        .brand-text span { color: #c5a059; }
+
+        .security-badge { text-align: right; border-right: 3px solid #c5a059; padding-right: 15px; }
+        .security-label { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1.5px; }
+        .cert-id { font-family: 'Courier New', monospace; font-size: 15px; color: #1e3a8a; font-weight: 700; }
+
+        /* Main Body */
+        .main-text { flex: 1; text-align: center; display: flex; flex-direction: column; justify-content: center; width: 100%; }
+        .pretitle { font-family: 'Cinzel', serif; font-size: 13px; color: #8a6d3b; letter-spacing: 7px; text-transform: uppercase; margin-bottom: 10px; font-weight: 700; }
+        .main-title { font-family: 'Playfair Display', serif; font-size: 62px; color: #111827; margin-bottom: 30px; font-weight: 700; background: linear-gradient(to right, #1e3a8a, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .recipient-label { font-family: 'Cinzel', serif; font-size: 11px; color: #64748b; letter-spacing: 5px; text-transform: uppercase; margin-bottom: 5px; }
+        .recipient-name { font-family: 'Great Vibes', cursive; font-size: 84px; color: #1e3a8a; margin-bottom: 20px; line-height: 1; }
+        .course-info { font-size: 17px; color: #475569; line-height: 1.8; max-width: 800px; margin: 0 auto; font-style: italic; }
+        .course-name { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: #111827; margin: 10px 0; display: block; font-style: normal; }
+
+        /* Footer */
+        .footer { width: 100%; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: flex-end; padding-top: 25px; }
+        
+        .qr-column { text-align: left; }
+        .qr-box { width: 100px; height: 100px; background: white; border: 2px solid #f1f5f9; padding: 5px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); }
+        .qr-box img { width: 100%; height: 100%; }
+        
+        .date-column { text-align: center; }
+        .date-label { font-family: 'Cinzel', serif; font-size: 11px; color: #8a6d3b; letter-spacing: 2px; font-weight: 700; }
+        .date-value { font-size: 20px; font-weight: 700; color: #1e3a8a; }
+
+        /* Signature Column */
+        .sig-column { text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .sig-wrap { height: 75px; display: flex; align-items: flex-end; margin-bottom: 5px; }
+        .sig-wrap img { max-width: 190px; max-height: 75px; object-fit: contain; }
+        .sig-line { width: 220px; height: 2px; background: linear-gradient(to right, transparent, #1e3a8a, transparent); margin-bottom: 10px; }
+        .sig-name { font-weight: 700; font-size: 17px; color: #111827; text-transform: uppercase; }
+        .sig-title { font-family: 'Cinzel', serif; font-size: 11px; color: #c5a059; letter-spacing: 1.5px; }
+
+        /* Seal */
+        .stamp-seal-branded {
+            position: absolute;
+            right: 80px;
+            bottom: 230px;
+            width: 200px;
+            height: 200px;
+            z-index: 50;
+            transform: rotate(-10deg);
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.15));
+        }
+
+        .seal-color-main { fill: #8d83ff; } 
+        .seal-color-gold { fill: #c5a059; }
+
+        .seal-text-branded {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 12px;
+            fill: #ffffff;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="certificate">
+        <div class="border-design"></div>
+        <div class="border-inner"></div>
+
+        <svg class="stamp-seal-branded" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <path class="seal-color-main" d="M100,5 C108,5 112,12 120,12 C128,12 133,5 142,7 C151,9 154,18 162,22 C170,26 179,25 184,33 C189,41 185,50 188,59 C191,68 200,73 198,82 C196,91 189,96 188,105 C187,114 191,123 186,131 C181,139 171,141 164,148 C157,155 154,164 145,168 C136,172 127,169 118,172 C109,175 104,182 95,182 C86,182 81,175 72,172 C63,169 54,172 45,168 C36,164 33,155 26,148 C19,141 9,139 4,131 C-1,123 3,114 2,105 C1,96 -6,91 -4,82 C-2,73 7,68 10,59 C13,50 9,41 14,33 C19,25 28,26 36,22 C44,18 47,9 56,7 C65,5 70,12 78,12 C86,12 90,5 100,5 Z" />
+            <circle cx="100" cy="100" r="82" class="seal-color-gold" />
+            <circle cx="100" cy="100" r="78" class="seal-color-main" />
+            <circle cx="100" cy="100" r="72" fill="none" stroke="#ffffff" stroke-width="2" />
+            <circle cx="100" cy="100" r="62" fill="none" stroke="#ffffff" stroke-width="0.5" stroke-dasharray="2,2" />
+
+            <defs>
+                <path id="curveTop" d="M 40, 100 A 60,60 0 1,1 160,100" />
+                <path id="curveBottom" d="M 40, 100 A 60,60 0 0,0 160,100" />
+            </defs>
+
+            <text class="seal-text-branded">
+                <textPath xlink:href="#curveTop" startOffset="50%" text-anchor="middle">Official Certified</textPath>
+            </text>
+            <text class="seal-text-branded">
+                <textPath xlink:href="#curveBottom" startOffset="50%" text-anchor="middle">Verified by Edvanta</textPath>
+            </text>
+
+            <polygon points="100,58 103,64 110,64 105,69 107,76 100,72 93,76 95,69 90,64 97,64" fill="#ffffff" />
+            <polygon points="82,66 84,70 88,70 85,73 86,77 82,75 78,77 79,73 76,70 80,70" fill="#ffffff" opacity="0.8" />
+            <polygon points="118,66 120,70 124,70 121,73 122,77 118,75 114,77 115,73 112,70 116,70" fill="#ffffff" opacity="0.8" />
+
+            <path d="M78,108 L95,125 L130,90" fill="none" stroke="#c5a059" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+
+        <div class="content">
+            <div class="header">
+                <div class="logo-area">
+                    <div class="logo-mark"><img src="{{logoUrl}}" alt="Edvanta Logo"></div>
+                    <div class="brand-text">Ed<span>vanta</span></div>
+                </div>
+                <div class="security-badge">
+                    <div class="security-label">Verification No.</div>
+                    <div class="cert-id">{{certificateId}}</div>
+                </div>
+            </div>
+
+            <div class="main-text">
+                <div class="pretitle">Official Certification</div>
+                <h1 class="main-title">Certificate of Achievement</h1>
+                <div class="recipient-label">This high honor is presented to</div>
+                <h2 class="recipient-name">{{studentName}}</h2>
+                <p class="course-info">
+                    In recognition of successful completion and professional proficiency in<br>
+                    <span class="course-name">{{courseName}}</span>
+                    attained through dedicated study and academic excellence.
+                </p>
+            </div>
+
+            <div class="footer">
+                <div class="qr-column">
+                    <div class="qr-box"><img src="{{qrcode}}" alt="QR Code"></div>
+                </div>
+                
+                <div class="date-column">
+                    <div class="date-label">Conferred On</div>
+                    <div class="date-value">{{completionDate}}</div>
+                </div>
+
+                <div class="sig-column">
+                    <div class="sig-wrap">
+                        <img src="{{signatureUrl}}" alt="Signature" onerror="this.style.opacity='0'">
+                    </div>
+                    <div class="sig-line"></div>
+                    <div class="sig-name">{{authorityName}}</div>
+                    <div class="sig-title">{{authorityTitle}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
